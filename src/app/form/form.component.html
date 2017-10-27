@@ -1,0 +1,58 @@
+<!-- 模板式表单 -->
+<form #myForm="ngForm" (ngSubmit)="checkForm()">
+  <p>username: <input type="text" ngModel name="usr" pattern="[a-zA-Z]+" /></p>
+  <p>phone number: <input type="number" ngModel name="phone" /></p>
+
+  <div ngModelGroup="psw_info">
+    <p>password: <input type="password" ngModel name="psw1" /></p>
+    <p>confirm password: <input type="password" ngModel name="psw2" /></p>
+  </div>
+
+  <button type="submit">Submit</button>
+
+  <p>{{myForm.value | json}}</p>
+</form>
+<hr />
+
+
+<!-- 响应式表单 -->
+<form [formGroup]="loginFormGroup">
+  <p>账号：<input type="text" formControlName="username" /></p>
+  <p>密码：<input type="password" formControlName="password" /></p>
+
+  <!-- 错误提示 -->
+  <mat-form-field>
+      <p>邮箱：</p>
+      <input matInput formControlName="email" />
+      <mat-error *ngIf="loginFormGroup.get('email').touched && loginFormGroup.get('email').invalid">
+        请输入有效邮箱地址
+      </mat-error>
+  </mat-form-field>
+  <br />
+
+  <!-- 自动补全 -->
+  <mat-form-field>
+    <p>名下车辆：</p>
+    <input type="text" matInput formControlName="car" [matAutocomplete]="auto_car" />
+    <mat-autocomplete #auto_car="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <br />
+
+  <!-- 日期选择器 -->
+  <mat-form-field>
+    <p>购入日期：</p>
+    <input matInput [matDatepicker]="picker" formControlName="date" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <p>{{'my car: ' + this.loginFormGroup.value.car}}</p>
+  <p>{{'date of buy: ' + (this.loginFormGroup.value.date | date: 'yyyy-MM-dd')}}</p>
+</form>
+<hr />
+
+
